@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YātrāAI - Smart Travel Recommendations & Cost Estimates</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Top Navigation Header -->
+    <header class="app-header">
+        <div class="header-container">
+            <div class="brand">
+                <div class="brand-icon">
+                    <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="brand-title">YātrāAI</h1>
+                    <p class="brand-subtitle">Gemini AI Recommendations &bull; Real Google Places Details</p>
+                </div>
+            </div>
+            <div class="api-status-badge" id="apiStatusBadge">
+                <span class="status-dot"></span>
+                <span id="apiStatusText">Checking Services...</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="hero-badge">Curated Destination Intelligence & Realistic Cost Forecasting</div>
+            <h2 class="hero-heading">Find Your Ideal Indian Destination & Estimated Budget</h2>
+            <p class="hero-description">
+                Submit your travel preferences and let Gemini AI curate tailor-made recommendations with detailed Indian Rupee (₹) cost estimates, enriched with authentic Google Places coordinates, ratings, and verified photos.
+            </p>
+        </section>
+
+        <!-- Preferences Form Card -->
+        <section class="form-container">
+            <div class="form-card">
+                <div class="form-header">
+                    <div class="form-title-group">
+                        <h3 class="form-title">Tell Us Your Travel Preferences</h3>
+                        <p class="form-description">Fill in your travel parameters. All cost estimates will be calculated destination-specifically in INR (₹).</p>
+                    </div>
+                    <button type="button" class="btn btn-outline" id="btnFillDemo">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+                        </svg>
+                        Fill Sample Preferences
+                    </button>
+                </div>
+
+                <form id="travelForm" novalidate>
+                    <!-- Form Row 1: City & Dates -->
+                    <div class="form-grid-3">
+                        <div class="form-group">
+                            <label for="startingCity" class="form-label">
+                                Starting City <span class="required">*</span>
+                            </label>
+                            <input type="text" id="startingCity" name="startingCity" class="form-input" 
+                                   placeholder="e.g. Mumbai, Delhi, Bengaluru" list="popularCities" required>
+                            <datalist id="popularCities">
+                                <option value="Mumbai">
+                                <option value="New Delhi">
+                                <option value="Bengaluru">
+                                <option value="Hyderabad">
+                                <option value="Chennai">
+                                <option value="Kolkata">
+                                <option value="Pune">
+                                <option value="Ahmedabad">
+                                <option value="Jaipur">
+                                <option value="Chandigarh">
+                            </datalist>
+                            <span class="field-error" id="err-startingCity"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="startDate" class="form-label">Tentative Start Date</label>
+                            <input type="date" id="startDate" name="startDate" class="form-input">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="endDate" class="form-label">Tentative End Date</label>
+                            <input type="date" id="endDate" name="endDate" class="form-input">
+                        </div>
+                    </div>
+
+                    <!-- Form Row 2: Duration, Travelers & Budget -->
+                    <div class="form-grid-4">
+                        <div class="form-group">
+                            <label for="travelersCount" class="form-label">
+                                Travelers <span class="required">*</span>
+                            </label>
+                            <input type="number" id="travelersCount" name="travelersCount" class="form-input" 
+                                   value="2" min="1" max="50" required>
+                            <span class="field-error" id="err-travelersCount"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="durationDays" class="form-label">
+                                Trip Duration (Days) <span class="required">*</span>
+                            </label>
+                            <input type="number" id="durationDays" name="durationDays" class="form-input" 
+                                   value="4" min="1" max="30" required>
+                            <span class="field-error" id="err-durationDays"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="budgetType" class="form-label">Budget Basis <span class="required">*</span></label>
+                            <select id="budgetType" name="budgetType" class="form-select">
+                                <option value="TOTAL" selected>Total Group Budget</option>
+                                <option value="PER_PERSON">Per-Person Budget</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="budgetAmount" class="form-label">
+                                Target Budget (₹ INR) <span class="required">*</span>
+                            </label>
+                            <input type="number" id="budgetAmount" name="budgetAmount" class="form-input" 
+                                   value="40000" min="1000" step="500" required placeholder="e.g. 40000">
+                            <span class="field-error" id="err-budgetAmount"></span>
+                        </div>
+                    </div>
+
+                    <!-- Form Row 3: Travel Persona & Pace -->
+                    <div class="form-grid-4">
+                        <div class="form-group">
+                            <label for="travelStyle" class="form-label">Travel Style</label>
+                            <select id="travelStyle" name="travelStyle" class="form-select">
+                                <option value="Mid-range" selected>Mid-range Explorer</option>
+                                <option value="Budget">Budget / Economical</option>
+                                <option value="Backpacking">Backpacking</option>
+                                <option value="Luxury">Luxury / Premium</option>
+                                <option value="Relaxed">Slow / Relaxed</option>
+                                <option value="Active">Adventure & Active</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="companions" class="form-label">Companions</label>
+                            <select id="companions" name="companions" class="form-select">
+                                <option value="Couple" selected>Couple / Partner</option>
+                                <option value="Solo">Solo Traveler</option>
+                                <option value="Family with kids">Family with Kids</option>
+                                <option value="Friends">Group of Friends</option>
+                                <option value="Senior travelers">Senior Citizens</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="preferredTransportation" class="form-label">Preferred Transit</label>
+                            <select id="preferredTransportation" name="preferredTransportation" class="form-select">
+                                <option value="Flexible" selected>Flexible / Best Option</option>
+                                <option value="Flight">Flight</option>
+                                <option value="Train">Train (AC)</option>
+                                <option value="Self-drive">Self-drive / Rental Car</option>
+                                <option value="Bus">Intercity Bus / Volvo</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="accommodationPreference" class="form-label">Accommodation</label>
+                            <select id="accommodationPreference" name="accommodationPreference" class="form-select">
+                                <option value="Mid-range hotel" selected>Mid-range Hotel (3-star)</option>
+                                <option value="Hostel">Hostel / Dormitory</option>
+                                <option value="Homestay">Authentic Homestay</option>
+                                <option value="Budget hotel">Budget Hotel / Guest House</option>
+                                <option value="Boutique resort">Boutique Resort</option>
+                                <option value="Luxury resort">5-Star Luxury Resort</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Travel Pace -->
+                    <div class="form-grid-1">
+                        <div class="form-group">
+                            <label for="travelPace" class="form-label">Desired Pace</label>
+                            <div class="radio-pill-group">
+                                <label class="radio-pill">
+                                    <input type="radio" name="travelPace" value="Relaxed">
+                                    <span>Relaxed &bull; 1-2 attractions/day</span>
+                                </label>
+                                <label class="radio-pill">
+                                    <input type="radio" name="travelPace" value="Moderate" checked>
+                                    <span>Moderate &bull; Balanced exploration</span>
+                                </label>
+                                <label class="radio-pill">
+                                    <input type="radio" name="travelPace" value="Fast-paced">
+                                    <span>Fast-paced &bull; Cover maximum sights</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Interests Selection -->
+                    <div class="form-group">
+                        <label class="form-label">Interests & Travel Themes (Select all that apply)</label>
+                        <div class="interests-grid" id="interestsContainer">
+                            <label class="interest-chip">
+                                <input type="checkbox" name="interests" value="Beaches & Coastal" checked>
+                                <span>🏖️ Beaches & Coastal</span>
+                            </label>
+                            <label class="interest-chip">
+                                <input type="checkbox" name="interests" value="Heritage & Architecture" checked>
+                                <span>🏛️ Heritage & Architecture</span>
+                            </label>
+                            <label class="interest-chip">
+                                <input type="checkbox" name="interests" value="Mountains & Scenic Hills">
+                                <span>⛰️ Mountains & Hills</span>
+                            </label>
+                            <label class="interest-chip">
+                                <input type="checkbox" name="interests" value="Food & Culinary Trails" checked>
+                                <span>🍲 Culinary & Local Food</span>
+                            </label>
+                            <label class="interest-chip">
+                                <input type="checkbox" name="interests" value="Nature & Wildlife">
+                                <span>🌿 Nature & Wildlife</span>
+                            </label>
+                            <label class="interest-chip">
+                                <input type="checkbox" name="interests" value="Spiritual & Temples">
+                                <span>🛕 Spiritual & Temples</span>
+                            </label>
+                            <label class="interest-chip">
+                                <input type="checkbox" name="interests" value="Adventure & Water Sports">
+                                <span>🚣 Adventure & Sports</span>
+                            </label>
+                            <label class="interest-chip">
+                                <input type="checkbox" name="interests" value="Nightlife & Cafes">
+                                <span>🍹 Nightlife & Cafes</span>
+                            </label>
+                            <label class="interest-chip">
+                                <input type="checkbox" name="interests" value="Wellness & Ayurveda">
+                                <span>🧘 Wellness & Relaxation</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Form Submission -->
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary" id="btnSubmit">
+                            <span class="btn-text">Generate Recommendations & Cost Breakdown</span>
+                            <span class="btn-spinner" hidden></span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- Loading State Indicator -->
+        <section class="loading-container" id="loadingSection" hidden>
+            <div class="loading-card">
+                <div class="loading-spinner"></div>
+                <h3 class="loading-title">Crafting Your Travel Recommendations</h3>
+                <p class="loading-subtitle" id="loadingStepText">
+                    Consulting Gemini AI to find matching Indian destinations and compute itemized INR cost estimates...
+                </p>
+                <div class="loading-steps">
+                    <div class="step-item step-active" id="step1">
+                        <span class="step-circle">1</span>
+                        <span>Prompting Gemini AI with travel preferences</span>
+                    </div>
+                    <div class="step-item" id="step2">
+                        <span class="step-circle">2</span>
+                        <span>Validating destination-specific INR cost breakdowns</span>
+                    </div>
+                    <div class="step-item" id="step3">
+                        <span class="step-circle">3</span>
+                        <span>Enriching with Google Places photos, ratings & coordinates</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Error Alert Container -->
+        <section class="error-container" id="errorSection" hidden>
+            <div class="error-card">
+                <div class="error-icon">
+                    <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <line x1="12" y1="8" x2="12" y2="12"/>
+                        <line x1="12" y1="16" x2="12.01" y2="16"/>
+                    </svg>
+                </div>
+                <div class="error-body">
+                    <h4 class="error-title" id="errorTitle">An Error Occurred</h4>
+                    <p class="error-message" id="errorMessage">Unable to process recommendation request.</p>
+                    <div class="error-details" id="errorDetailsList" hidden></div>
+                </div>
+                <button type="button" class="btn-close" id="btnCloseError">&times;</button>
+            </div>
+        </section>
+
+        <!-- Results Display Section -->
+        <section class="results-container" id="resultsSection" hidden>
+            <div class="results-header">
+                <div>
+                    <h3 class="results-title">Recommended Destinations for You</h3>
+                    <p class="results-subtitle" id="resultsUserSummary"></p>
+                </div>
+                <div class="user-budget-badge" id="userBudgetDisplay"></div>
+            </div>
+
+            <!-- AI Price Disclaimer Banner -->
+            <div class="disclaimer-banner">
+                <div class="disclaimer-icon">ℹ️</div>
+                <div class="disclaimer-text" id="disclaimerText">
+                    <strong>AI Cost Estimate Disclaimer:</strong> All prices and breakdowns shown below are destination-specific estimates generated by Gemini AI in Indian Rupees (₹), not live verified fare quotes or booking reservations. Fares vary with real-time demand, season, and provider tariffs.
+                </div>
+            </div>
+
+            <!-- Destination Cards Grid -->
+            <div class="cards-grid" id="cardsGrid">
+                <!-- Dynamically populated cards will appear here -->
+            </div>
+        </section>
+    </main>
+
+    <footer class="app-footer">
+        <div class="footer-container">
+            <p>&copy; 2026 YātrāAI &bull; Destination Intelligence powered by Google Gemini &amp; Google Places API.</p>
+            <p class="footer-subtext">Designed with Java Spring Boot, Maven, and Vanilla Web Technologies.</p>
+        </div>
+    </footer>
+
+    <script src="/js/app.js"></script>
+</body>
+</html>
