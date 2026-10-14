@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.wherenxt.service.GeminiServiceTest
+-------------------------------------------------------------------------------
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.306 s -- in com.wherenxt.service.GeminiServiceTest

@@ -1,0 +1,6 @@
+com\wherenxt\service\WikimediaCommonsServiceTest.class
+com\wherenxt\controller\RecommendationControllerTest.class
+com\wherenxt\controller\HealthControllerTest.class
+com\wherenxt\service\RecommendationServiceTest.class
+com\wherenxt\controller\ImageControllerTest.class
+com\wherenxt\service\GeminiServiceTest.class
